@@ -22,4 +22,14 @@ module.exports = {
   ],
 
   coverageDirectory: 'coverage',
+
+  reporters: [ "default", "jest-junit" ],
+
+  coverageReporters: ["json-summary", "cobertura"],
+
+  coverageThreshold: {
+    global: {
+        lines: 30,
+    },
+  },
 }
