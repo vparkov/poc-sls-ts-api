@@ -1,0 +1,9 @@
+.serverless
+.vscode
+.webpack
+node_modules
+coverage
+docker
+.build
+.eslintcache
+.dynamodb

@@ -1,0 +1,7 @@
+babel.config.js
+coverage
+jest-dynamodb-config.js
+jest.config.js
+
+# todo the tests folder is here as a temporary fix. remove
+tests

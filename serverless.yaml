@@ -1,0 +1,141 @@
+# NOTE: update this with your service name
+service: demo-api-${self:provider.stage}
+
+params:
+  default:
+    domainEnvironment: dev
+  dev:
+    domainEnvironment: dev
+  prod:
+    domainEnvironment: prod
+
+
+
+# Create an optimized package for our functions 
+package:
+  individually: true
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-plugin-tracing
+  # - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-domain-manager
+  - serverless-plugin-typescript
+  - serverless-plugin-resource-tagging
+  - serverless-offline #serverless-offline needs to be last in the list
+
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+    useChildProcesses: true
+
+  # Custom Certificates
+  domainCertificateArn:
+    dev: arn:aws:acm:us-east-1:963270673912:certificate/b548a7f9-acb4-4b87-bd49-d2a75deabc31
+    prod: arn:aws:acm:us-east-1:157666107404:certificate/8a640aff-ef47-4c8a-b2dc-41326aa369a4
+  
+  domainName:
+    dev: ${self:service}.test-trg-api.co.uk
+    prod: demo-api.trg-api.co.uk
+  # Custom Certificates
+
+  customDomain:
+    domainName: ${self:custom.domainName.${param:domainEnvironment}}
+    certificateArn: ${self:custom.domainCertificateArn.${param:domainEnvironment}}
+    createRoute53Record: true
+    autoDomain: true
+    apiType: rest
+    stages:
+      - ${self:provider.stage}
+
+  dynamodb:
+    start:
+      port: 8881
+      inMemory: true
+      migrate: true
+      seed: true
+    stages:
+      - ${self:provider.stage}
+  
+  environment:
+    dev:
+      DEMO_DYNAMODB_TABLE: demo-api-${self:provider.stage}
+
+    prod:
+      DEMO_DYNAMODB_TABLE: demo-api-${self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  architecture: arm64
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  stackName: ${self:service}
+  apiName: ${self:service}
+  environment: ${self:custom.environment.${param:domainEnvironment}}
+
+  tracing: 
+    lambda: true
+  # removing api keys because stages required different key values. todo fix this
+  apiGateway:
+    apiKeys:
+    - name: api-key-${self:service}
+      value: ${env:API_KEY, 'api-key-5sk4xZqAjufXbS4TKMm781oirXOp986J'}-${self:service}
+  stackTags:
+    project:  ${self:service}
+  iam:
+    role:
+      statements:
+         #DynamoDB Configuration
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          # Restrict our IAM role permissions to
+          # the specific table for the stage
+          Resource: 
+            - "Fn::GetAtt": [ DemoTable, Arn ]
+        #DynamoDB Configuration
+
+functions:
+
+  hello:
+    handler: src/controllers/hello.handler
+    name: ${self:service}-hello
+    timeout: 5
+    events:
+      - http:
+          path: /hello
+          method: post
+          cors: true
+          private: true
+
+  createUser:
+    handler: src/controllers/createUser.handler
+    name: ${self:service}-createUser
+    timeout: 5
+    events:
+      - http:
+          path: /user
+          method: post
+          cors: true
+          private: true
+
+  getUser:
+    handler: src/controllers/getUser.handler
+    name: ${self:service}-getUser
+    timeout: 5
+    events:
+      - http:
+          path: /user/{userId}
+          method: get
+          cors: true
+          private: true
+
+resources:
+  - ${file(resources/dynamodb/demo-table.yml)}
