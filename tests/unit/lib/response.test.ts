@@ -1,4 +1,4 @@
-import { success, error } from '../../src/lib/response';
+import { success, error } from '../../../src/lib/response';
 
 describe('Response lib', () => {
     it('should return the correct success message', async () => {

@@ -1,4 +1,4 @@
-import client, { dbOptions } from '../../src/lib/dynamodb';
+import client, { dbOptions } from '../../../src/lib/dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 
