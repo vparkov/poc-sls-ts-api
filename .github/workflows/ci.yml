@@ -86,6 +86,7 @@ jobs:
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
           lcov-file: ./coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
     
   publish-test-results:
     name: "Publish Unit Tests Results"
