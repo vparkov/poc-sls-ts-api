@@ -97,11 +97,13 @@ jobs:
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
-          files: ./coverage1.xml,./coverage2.xml # optional
+          # files: ./junit.xml
+          directory: ./coverage/
           flags: unittests # optional
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+          # version: "v0.1.15"
 
 
       - name: Upload Unit Test Results
