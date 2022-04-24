@@ -95,15 +95,7 @@ jobs:
       #     toolpath: 'reportgeneratortool' # Default directory for installing the dotnet tool.
      
       - name: Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          # files: ./junit.xml
-          directory: ./coverage/
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
-          # version: "v0.1.15"
+        uses: codecov/codecov-action@v3
 
 
       - name: Upload Unit Test Results
