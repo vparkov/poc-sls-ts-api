@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: demo-api-${self:provider.stage}
+service: poc-sls-ts-api-${self:provider.stage}
 
 params:
   default:
@@ -14,17 +14,27 @@ params:
 # Create an optimized package for our functions 
 package:
   individually: true
+  excludeDevDependencies: true
 
 plugins:
   - serverless-dynamodb-local
   - serverless-plugin-tracing
   # - serverless-dotenv-plugin # Load .env as environment variables
   - serverless-domain-manager
-  - serverless-plugin-typescript
+  - serverless-esbuild
   - serverless-plugin-resource-tagging
   - serverless-offline #serverless-offline needs to be last in the list
 
 custom:
+
+  esbuild:
+    bundle: true
+    minify: true
+    target: 'node14'
+    packager: 'yarn'
+    sourcemap: true
+    sourcesContent: false
+
   serverless-offline:
     noPrependStageInUrl: true
     useChildProcesses: true
@@ -36,7 +46,7 @@ custom:
   
   domainName:
     dev: ${self:service}.test-trg-api.co.uk
-    prod: demo-api.trg-api.co.uk
+    prod: poc-sls-ts-api.trg-api.co.uk
   # Custom Certificates
 
   customDomain:
@@ -59,10 +69,12 @@ custom:
   
   environment:
     dev:
-      DEMO_DYNAMODB_TABLE: demo-api-${self:provider.stage}
+      DEMO_DYNAMODB_TABLE: poc-sls-ts-api-${self:provider.stage}
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1,
 
     prod:
-      DEMO_DYNAMODB_TABLE: demo-api-${self:provider.stage}
+      DEMO_DYNAMODB_TABLE: poc-sls-ts-api-${self:provider.stage}
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1,
 
 provider:
   name: aws
@@ -75,6 +87,7 @@ provider:
   environment: ${self:custom.environment.${param:domainEnvironment}}
 
   tracing: 
+    apiGateway: true
     lambda: true
   # removing api keys because stages required different key values. todo fix this
   apiGateway:
