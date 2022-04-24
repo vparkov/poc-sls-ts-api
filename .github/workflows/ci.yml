@@ -50,15 +50,15 @@ jobs:
           path: junit.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
-      - name: Code Coverage Report
-        uses: ArtiomTr/jest-coverage-report-action@v2
+      # - name: Code Coverage Report
+      #   uses: ArtiomTr/jest-coverage-report-action@v2
 
-      - name: Comment Test Coverage
-        uses: AthleticNet/comment-test-coverage@1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: coverage/coverage-summary.json
-          title: Test Coverage
+      # - name: Comment Test Coverage
+      #   uses: AthleticNet/comment-test-coverage@1.1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     path: coverage/coverage-summary.json
+      #     title: Test Coverage
 
       # KEEP covertura code coverage report
       # generates a report and comments in the PR
