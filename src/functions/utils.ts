@@ -6,4 +6,5 @@ export const getName = (data: RequestBody): string => {
   }
 
   return data.name;
+  return data.name + 'a';
 };

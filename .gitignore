@@ -7,3 +7,4 @@ docker
 .build
 .eslintcache
 .dynamodb
+junit.xml
