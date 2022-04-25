@@ -50,8 +50,8 @@ jobs:
           path: junit.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
-      # - name: Code Coverage Report
-      #   uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Code Coverage Report
+        uses: ArtiomTr/jest-coverage-report-action@v2
 
       # - name: Comment Test Coverage
       #   uses: AthleticNet/comment-test-coverage@1.1
@@ -136,11 +136,6 @@ jobs:
         with:
           files: "artifacts/**/*.xml"
 
-
-# - name: Upload coverage to Codecov
-#     uses: codecov/codecov-action@v2
-#     with:
-#       token: ${{ secrets.CODECOV_TOKEN }}
       
           
   
